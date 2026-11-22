@@ -45,6 +45,8 @@ Unclear task, missing rule, red check after a try -> stop and ask Slava (see "St
 
 - **Before work:** read the feature hub `docs/features/<feature>/README.md`, then your stage file. The stage file is
   the task. Status `draft` = not approved yet: stop and ask. When Slava approves it, set `status: approved`.
+- **Read only what the stage cites:** find the section with Grep and read just that part, not the whole file; do not
+  scan the repo beyond the files the stage names.
 - **After each step** (tests written, code green, review done): update the stage file's "Status" — done / left /
   risks — and `status:` in its header. Never change the sections above "Status".
 - **After the stage, in the same PR:** update the hub's "Stages" table and "Status"; `docs/roadmap.md` if the
