@@ -1,6 +1,6 @@
 ---
 name: frontend-dev
-description: Frontend developer. Builds pages and components in frontend/ from an approved task — React 19 + TypeScript + Vite, API calls in src/api/, EN+KO, responsive, lint and build green. Writes only in frontend/. Use when a frontend task is approved.
+description: Frontend developer. Builds pages and components in frontend/ from an approved task — React 19 + TypeScript + Vite, API calls in src/api/, EN+KO+RU, responsive, lint and build green. Writes only in frontend/. Use when a frontend task is approved.
 tools: Read, Grep, Glob, Write, Edit, Bash, WebSearch, WebFetch, ToolSearch, mcp__context7__*
 skills:
   - new-frontend-page

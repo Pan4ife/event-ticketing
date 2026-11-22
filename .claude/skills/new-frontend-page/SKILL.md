@@ -1,6 +1,6 @@
 ---
 name: new-frontend-page
-description: Build a frontend page or component from a task — React 19 + TypeScript + Vite, API calls only in src/api/, loading/empty/error states, EN+KO texts, responsive, lint and build green. Use when a frontend task in docs/tasks/ is approved.
+description: Build a frontend page or component from a task — React 19 + TypeScript + Vite, API calls only in src/api/, loading/empty/error states, EN+KO+RU texts, responsive, lint and build green. Use when a frontend task in docs/tasks/ is approved.
 ---
 
 # New frontend page
@@ -25,7 +25,7 @@ Agents write `frontend/`; Slava reviews it. He is a backend developer — keep t
 - **TypeScript strict**, no `any` without a comment why.
 - **Every data screen has four states:** loading, success, empty, error. Errors use the PRD error format
   (`message`, `validationErrors` near form fields). Never show stack traces.
-- **Texts in English and Korean** (PRD Part 1 "Scope"): no hard-coded UI strings scattered in components;
+- **Texts in English, Korean and Russian** (PRD Part 1 "Scope"): no hard-coded UI strings scattered in components;
   keep them where the language switch can reach them.
 - **Responsive:** works on mobile, tablet, desktop (PRD "Responsive Behavior").
 - **New dependency** (router, state library, UI kit, i18n library) → stop and ask Slava first; versions must

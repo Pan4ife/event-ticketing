@@ -13,7 +13,7 @@ This file has two parts:
 
 - **Roles:** Guest, User, Admin. The optional Organizer role is not built.
 - **Additional features:** Dashboard, Advanced statuses, Multilanguage, AI recommendations.
-- **Languages:** English and Korean (the assignment's example was English + Ukrainian).
+- **Languages:** English, Korean and Russian (the assignment's example was English + Ukrainian).
 - **Bookings are confirmed immediately** — there is no payment step. `PENDING` and `EXPIRED` stay in the
   status list for admin use only.
 - **AI recommendations** are rule-based (categories the user booked + popularity + upcoming date), with a
