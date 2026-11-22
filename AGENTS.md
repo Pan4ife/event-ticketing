@@ -15,6 +15,29 @@ A task file (`docs/tasks/NNN-*.md`) may narrow them, never loosen them. Product 
 
 If backend code needs a change, write in chat what to change and why (file, method, reason) — Slava types it.
 
+## How the process works
+
+One task = one session = one branch = one PR.
+Roles live in `.claude/agents/` (instructions in `.claude/skills/`); in Codex and Cursor follow the same steps
+by hand.
+
+Backend task (writer: Slava)
+1. task-writer: plan line -> `docs/tasks/NNN-*.md`; Slava approves it.
+2. tester: tests first in `backend/src/test/` - red.
+3. Slava writes `backend/src/main/` until they are green; mentor explains and hints, never writes.
+4. `./mvnw verify` is green.
+5. reviewer: every criterion with `file:line` evidence.
+6. PR - Slava merges.
+
+Frontend task (writer: agent)
+1. task-writer -> task; Slava approves it.
+2. frontend-dev writes `frontend/`.
+3. `npm run lint && npm run build` are green.
+4. reviewer checks; Slava looks at the page.
+5. PR - Slava merges.
+
+Unclear task, missing rule, red check after a try -> stop and ask Slava (see "Stop and ask").
+
 ## Stack
 
 - Backend: Java 25, Spring Boot 4.2 (Web MVC, Data JPA, Validation, Actuator), PostgreSQL 18, Flyway (SQL migrations
@@ -44,6 +67,17 @@ If backend code needs a change, write in chat what to change and why (file, meth
 - Money and capacity rules from the PRD are tested, especially "no overselling" (concurrency test).
 - Simple first. If unsure between two designs, pick the simpler one and say so.
 - Frontend: TypeScript strict, no `any` without a comment why; API calls in one place (`src/api/`).
+
+## Facts and verification
+
+- Before you talk about code, open the real file and cite `path:line`. Never describe a file from memory.
+- Versions only from `backend/pom.xml` and `frontend/package.json`.
+- Facts about libraries and tools come from official documentation, with a link. Blogs and AI answers only help
+  to find where to look.
+- Not sure — say so. "I don't know, I'll check" is better than a guess. Never invent an API, a property or an
+  annotation.
+- "It works" is a claim: prove it with a test run or a build (`./mvnw verify`, `npm run build`), or say it is
+  not verified yet.
 
 ## Stop and ask (do not guess)
 
