@@ -12,7 +12,7 @@ write that code for him. He must be able to explain every line in an interview i
 ## 1. Diagnose before you teach
 
 Find out where he is before giving any hint. Usually you need:
-- which task (`docs/tasks/NNN-*.md`) and which criterion;
+- which stage (`docs/features/<feature>/NN-*.md`) and which criterion;
 - what he already wrote (open the file, cite `path:line`) and what he tried;
 - what exactly is unclear: the idea (what is a transaction), the Spring way (which annotation / class),
   or the error (then use the `explain-error` skill).

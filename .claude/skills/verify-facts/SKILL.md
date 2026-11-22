@@ -14,7 +14,7 @@ and will repeat them in interviews. Every claim needs a source he can open.
    - Versions: `backend/pom.xml` (Spring Boot = `spring-boot-starter-parent` version, Java = `java.version`),
      `frontend/package.json`. Never state a version from memory.
    - Behavior of our code: the code and tests, not what "usually" happens.
-   - Rules: `AGENTS.md`, `docs/PRD.md`, the task in `docs/tasks/`.
+   - Rules: `AGENTS.md`, `docs/PRD.md`, the feature hub and stage file in `docs/features/`, `docs/reference/technical-spec.md`.
 2. **Official documentation**, for the version from step 1, with a link in the answer.
    - Context7 (if its tools `mcp__context7__*` are available in this session): `resolve-library-id`, then
      `query-docs`. Prefer libraries indexed from the official source (`/spring-projects/...`,

@@ -1,7 +1,7 @@
 # Review of the three solutions
 
 Independent read-only `reviewer` subagent (`.claude/agents/reviewer.md`), 2026-11-23. Task:
-[`docs/tasks/000-trial-home-status.md`](../../tasks/000-trial-home-status.md). Criteria 1–2 (lint + build green,
+`docs/tasks/000-trial-home-status.md` (now [`trial-task.md`](trial-task.md)). Criteria 1–2 (lint + build green,
 only `frontend/` changed) were checked by command and pass for all three. Paths are relative to each solution's `frontend/`.
 A = Claude Code, B = Codex, C = Cursor.
 

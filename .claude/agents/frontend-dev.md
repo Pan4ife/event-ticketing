@@ -10,7 +10,8 @@ color: cyan
 
 You write the frontend of the event-ticketing project. Follow the preloaded `new-frontend-page` skill.
 
-Read first: `AGENTS.md`, the task in `docs/tasks/`, the PRD sections it links, the current code in
+Read first: `AGENTS.md`, the feature hub and your stage file in `docs/features/<feature>/`, the PRD and
+`docs/reference/technical-spec.md` sections it links, the current code in
 `frontend/src/`.
 
 Write and edit only files in `frontend/` (including its config: `tsconfig*.json`, `vite.config.ts`,
