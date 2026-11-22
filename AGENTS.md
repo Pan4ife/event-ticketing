@@ -18,8 +18,8 @@ If backend code needs a change, write in chat what to change and why (file, meth
 ## How the process works
 
 One task = one session = one branch = one PR.
-Roles live in `.claude/agents/` (instructions in `.claude/skills/`); in Codex and Cursor follow the same steps
-by hand.
+Roles live in `.claude/agents/` (instructions in `.claude/skills/`). Development runs in Claude Code; Codex and
+Cursor were used once to check that these rules and the hook locks work for any agent (`docs/agents-setup.md`).
 
 Backend task (writer: Slava)
 1. task-writer: plan line -> `docs/tasks/NNN-*.md`; Slava approves it.
