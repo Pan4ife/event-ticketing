@@ -1,0 +1,22 @@
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# Backend (Maven)
+target/
+.mvn/wrapper/maven-wrapper.jar
+
+# Frontend (Node)
+node_modules/
+dist/
+*.local
+
+# Local secrets and machine-specific agent settings
+.env
+.env.*
+.claude/settings.local.json
+
+# OS
+.DS_Store
+Thumbs.db
