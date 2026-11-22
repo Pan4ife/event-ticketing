@@ -45,8 +45,14 @@ Backend is written by Slava with AI help; frontend is written by AI agents and r
 
 1. **Hosting:** where to deploy frontend, backend and PostgreSQL (prefer a free or cheap tier).
 2. **Event images:** local disk breaks on most hosts after redeploy — cloud storage or "image URL only"?
-3. **Versions and tooling** (Java, Spring Boot, migrations, style checks) — decided in step 2 together with
-   the project rules file `AGENTS.md`.
+3. ~~**Versions and tooling**~~ — decided in step 2, see "Tech stack" below.
+
+### Tech stack (decided 2026-11-23)
+
+- **Backend:** Java 25, Spring Boot 4.2, PostgreSQL 18, Flyway migrations, Maven wrapper.
+- **Backend checks:** JUnit 5 + Testcontainers, ArchUnit (layer rules), Spotless + Palantir Java Format.
+- **Frontend:** React 19 + TypeScript + Vite, oxlint, Node.js 26 LTS.
+- **CI:** GitHub Actions runs the same checks as locally. Agent rules: `AGENTS.md`.
 
 ---
 

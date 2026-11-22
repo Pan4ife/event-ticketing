@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "hooks": {
+    "preToolUse": [
+      {
+        "command": "node scripts/protect-backend-main.mjs",
+        "matcher": "Write|Delete"
+      }
+    ]
+  }
+}

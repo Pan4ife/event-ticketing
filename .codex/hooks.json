@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "^apply_patch$|^Edit$|^Write$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node scripts/protect-backend-main.mjs",
+            "statusMessage": "Checking that backend/src/main/ is not touched"
+          }
+        ]
+      }
+    ]
+  }
+}
