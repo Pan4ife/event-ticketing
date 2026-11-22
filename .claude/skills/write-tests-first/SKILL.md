@@ -1,6 +1,6 @@
 ---
 name: write-tests-first
-description: Write backend tests from a task before the production code exists (TDD) — black-box through the API contract, real PostgreSQL via Testcontainers, red for the right reason. Use when a backend task in docs/tasks/ is approved and Slava has not written the code yet.
+description: Write backend tests from a task before the production code exists (TDD) — black-box through the API contract, real PostgreSQL via Testcontainers, red for the right reason. Use when a backend stage in docs/features/ is approved and Slava has not written the code yet.
 ---
 
 # Tests first
@@ -10,9 +10,10 @@ what the task asks — no more, no less — and fail now for the right reason.
 
 ## Inputs
 
-- The task `docs/tasks/NNN-*.md`: criteria `[auto]` name the tests you write; the API contract
-  (endpoints, JSON, status codes) is in the task.
-- `docs/PRD.md` sections linked in the task; "Error Handling" for the error JSON format.
+- The stage file `docs/features/<feature>/NN-*.md` (read its hub first): criteria `[auto]` name the tests you
+  write; the API contract (endpoints, JSON, status codes, table and column names) is in the stage.
+- `docs/PRD.md` and `docs/reference/technical-spec.md` sections linked in the stage; spec "Error Handling" for
+  the error JSON format.
 - Existing tests in `backend/src/test/java/io/github/pan4ife/eventticketing/` — copy their setup:
   `HealthEndpointTest` (`@SpringBootTest`, `@AutoConfigureMockMvc`, `MockMvcTester`, AssertJ) and
   `TestcontainersConfiguration` (real PostgreSQL 18).

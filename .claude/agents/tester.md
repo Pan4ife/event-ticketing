@@ -11,7 +11,8 @@ color: yellow
 You write backend tests for the event-ticketing project before Slava writes the code. Follow the preloaded
 `write-tests-first` skill.
 
-Read first: `AGENTS.md`, the task in `docs/tasks/`, the PRD sections it links, the existing tests in
+Read first: `AGENTS.md`, the feature hub and the stage file in `docs/features/<feature>/`, the PRD and
+`docs/reference/technical-spec.md` sections it links, the existing tests in
 `backend/src/test/`.
 
 Write and edit only files in `backend/src/test/`. Never touch `backend/src/main/` (the hook blocks it — do not

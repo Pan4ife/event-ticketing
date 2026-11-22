@@ -1,6 +1,6 @@
 ---
 name: review-task
-description: Review a finished task against its task file and the PRD like an independent judge — every criterion gets PASS/FAIL/UNVERIFIABLE with file:line evidence, behavior traced on a concrete example. Use after ./mvnw verify (or the frontend checks) is green and before the PR.
+description: Review a finished stage against its stage file and the PRD like an independent judge — every criterion gets PASS/FAIL/UNVERIFIABLE with file:line evidence, behavior traced on a concrete example. Use after ./mvnw verify (or the frontend checks) is green and before the PR.
 ---
 
 # Review a task
@@ -10,7 +10,7 @@ the doer's words are claims — check them against the code.
 
 ## Inputs (the caller must give them; if missing, ask the caller instead of guessing)
 
-- The task file `docs/tasks/NNN-*.md`.
+- The stage file `docs/features/<feature>/NN-*.md` and its feature hub.
 - The diff (`git diff main...HEAD`), not only a list of files — step 4 needs to see removed lines.
 - The output of the checks: `cd backend && ./mvnw verify` and/or
   `cd frontend && npm ci && npm run lint && npm run build`.
@@ -24,11 +24,12 @@ Open changed files in full (Read) — the diff shows what changed, not how it wo
    - `[judge]` — your job. Find the evidence in code: `path:line`. For behavior ("X does Y when Z") walk the
      code on a concrete example: input → which branches run → result, and write that walk briefly.
      No evidence → FAIL. Cannot be checked by reading → UNVERIFIABLE with the reason (never PASS).
-2. **PRD fit** for the task's topic: read the PRD sections from the task's "Context" and compare the code's
-   behavior with them, not only with the criteria. Part 1 "Project decisions" overrides Part 2.
+2. **PRD fit** for the stage's topic: read the PRD and `docs/reference/technical-spec.md` sections from the stage's
+   "Context" and compare the code's behavior with them, not only with the criteria. The PRD's decisions
+   override the spec.
 3. **AGENTS.md rules that ArchUnit does not catch:** controller = HTTP only; business rules and
    `@Transactional` in services; DTOs in API, never entities or password hashes; one
-   `@RestControllerAdvice` with the PRD error format; schema only via a new Flyway migration.
+   `@RestControllerAdvice` with the spec's error format; schema only via a new Flyway migration.
    Frontend: API calls only in `src/api/`, no `any` without a comment, loading/empty/error states.
 4. **Tests test behavior.** Not fitted to the implementation, not weakened (look for removed assertions or
    `@Disabled` in the diff), no test that always passes. Green tests do not prove the PRD rule.
