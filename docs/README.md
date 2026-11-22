@@ -24,6 +24,7 @@ same idea is easy to find under its new name.
 | Retros | [`retro.md`](retro.md) | the stage's agent, in the PR | Slava, task-writer | `docs/system-journal.md` |
 | System map | this file | agents (Slava approves) | a new person or agent | `docs/map.md` |
 | For people and employers | [`README.md`](../README.md) (Korean + short English) | agents (Slava approves) | recruiters, reviewers | — |
+| Slava's own work protocol (what to open and say at each step, in Russian) | [`my-workflow.md`](my-workflow.md) | Slava (agents after his yes) | Slava | — |
 | AI agents setup and the step 4 check | [`agents-setup.md`](agents-setup.md), [`experiments/`](experiments/2026-11-agents-check/README.md) | agents | Slava, reviewers | — |
 
 ### Not carried over, and why
@@ -65,6 +66,7 @@ docs/
   PRD.md                    product truth (Slava)
   roadmap.md                features in order + status
   retro.md                  lessons
+  my-workflow.md            Slava's own protocol (RU)
   agents-setup.md           Claude Code / Codex / Cursor setup and check
   reference/technical-spec.md   technical specification (TZ), unchanged
   features/
