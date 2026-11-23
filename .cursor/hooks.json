@@ -3,8 +3,13 @@
   "hooks": {
     "preToolUse": [
       {
-        "command": "node scripts/protect-backend-main.mjs",
+        "command": "node scripts/protect-backend-main.mjs --agent=cursor",
         "matcher": "Write|Delete"
+      }
+    ],
+    "beforeShellExecution": [
+      {
+        "command": "node scripts/protect-backend-main.mjs --agent=cursor"
       }
     ]
   }
