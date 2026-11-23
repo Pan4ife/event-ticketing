@@ -11,7 +11,7 @@ Status: `not started` · `in progress` · `done`.
 
 | # | Item | Who writes | Status | Where |
 |---|---|---|---|---|
-| 0 | Fix the Codex lock + lock shell commands for all three agents | agent (Slava allowed `scripts/` for this task) | not started | [`retro.md`](retro.md), [`agents-setup.md`](agents-setup.md) → "Finding: the Codex lock did not block" |
+| 0 | Fix the Codex lock + lock shell commands for all three agents | agent (Slava allowed `scripts/` for this task) | done (PR open) — lock re-checked live on all three | [`retro.md`](retro.md), [`agents-setup.md`](agents-setup.md) → "Finding: the Codex lock did not block" |
 
 ## Product features
 

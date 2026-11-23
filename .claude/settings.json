@@ -3,11 +3,11 @@
   "hooks": {
     "PreToolUse": [
       {
-        "matcher": "Edit|Write|MultiEdit|NotebookEdit",
+        "matcher": "Edit|Write|MultiEdit|NotebookEdit|Bash|PowerShell",
         "hooks": [
           {
             "type": "command",
-            "command": "node \"${CLAUDE_PROJECT_DIR}/scripts/protect-backend-main.mjs\""
+            "command": "node \"${CLAUDE_PROJECT_DIR}/scripts/protect-backend-main.mjs\" --agent=claude"
           }
         ]
       }
