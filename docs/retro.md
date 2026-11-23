@@ -4,6 +4,17 @@ One entry per lesson, newest first. 3–5 lines: what happened → why it was no
 check, not a new "be careful" sentence). Written by the agent of the stage in the same PR, before Slava merges
 (AGENTS.md → "Work protocol"); also after any surprise outside a stage.
 
+## 2026-11-23 — Why the Codex lock did not block, and the fix (roadmap item 0)
+
+- **What happened:** Codex on Windows runs hooks through `powershell.exe -Command`, which turns our exit code `2` into
+  `1`; Codex treats `1` as "hook failed" and lets the edit through.
+- **Why not caught earlier:** we tested the script by running it ourselves (exit 2 was there), never through the shell
+  the agent actually uses.
+- **What changes:** the script answers Codex with JSON on exit 0 (not damaged by any shell); shell commands are locked
+  too; bad input closes the lock. New check: `node scripts/protect-backend-main.test.mjs` runs the Codex examples through
+  `powershell.exe`, like Codex does. Live re-check: blocked on Claude Code, Codex and Cursor.
+- **Details:** [`agents-setup.md`](agents-setup.md) → "Fixed: the lock works on all three".
+
 ## 2026-11-23 — The Codex lock did not block (step 4)
 
 - **What happened:** in the rules check Codex refused to edit `backend/src/main/` when asked — but when Slava allowed

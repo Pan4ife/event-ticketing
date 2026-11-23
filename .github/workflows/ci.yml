@@ -1,4 +1,4 @@
-# CI: the same checks as locally — backend `./mvnw verify`, frontend lint + build. Runs on every push to main and every PR.
+# CI: the same checks as locally — backend `./mvnw verify`, frontend lint + build, lock examples. Runs on every push to main and every PR.
 name: CI
 
 on:
@@ -42,3 +42,14 @@ jobs:
       - run: npm ci
       - run: npm run lint
       - run: npm run build
+
+  lock:
+    name: lock (examples)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "26"
+      # 34 hook payloads -> scripts/protect-backend-main.mjs must block or pass each one.
+      - run: node scripts/protect-backend-main.test.mjs

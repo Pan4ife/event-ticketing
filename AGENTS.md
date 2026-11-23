@@ -111,12 +111,13 @@ after you tried. Write what you tried and the exact question — a guess instead
 | Layer rules, constructor injection, no `System.out` | ArchUnit `ArchitectureTest` (inside `verify`) |
 | Java formatting | Spotless (inside `verify`; fix with `./mvnw spotless:apply`) |
 | Frontend lints and builds | `cd frontend && npm ci && npm run lint && npm run build` |
-| Agents do not edit `backend/src/main/` | hook `scripts/protect-backend-main.mjs` (Claude Code, Codex, Cursor) |
+| Agents do not write in `backend/src/main/` (edit tools and shell) | hook `scripts/protect-backend-main.mjs` (Claude Code, Codex, Cursor); examples: `node scripts/protect-backend-main.test.mjs` |
 | Everything above on every push and PR | GitHub Actions `.github/workflows/ci.yml` |
 | Task criteria, layers, readability | reviewer (reads the code, cites `file:line`) |
 
-Run the checks for what you changed before you say "done". The hook covers the agents' edit tools; a shell command
-can still write files, so the rule above still applies to the shell.
+Run the checks for what you changed before you say "done". The hook covers the agents' edit tools and, by a simple
+rule, shell commands that write into `backend/src/main/`. It can be bypassed (a script, a path built from pieces),
+so the rule above still applies to the shell.
 
 ## Git
 

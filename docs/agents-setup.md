@@ -12,15 +12,26 @@ One source of rules: [`AGENTS.md`](../AGENTS.md). Everything else either imports
 |---|---|---|---|
 | Reads `AGENTS.md` | through `CLAUDE.md` (`@AGENTS.md` import) | yes, natively | yes, natively |
 | Also reads | `CLAUDE.md`, `.claude/agents/`, `.claude/skills/` | — (own formats: `.codex/agents/*.toml`, `.agents/skills/`) | `CLAUDE.md`, `.claude/agents/`, `.claude/skills/` |
-| Lock on `backend/src/main/` | `.claude/settings.json` → PreToolUse `Edit\|Write\|MultiEdit\|NotebookEdit` | `.codex/hooks.json` → PreToolUse `apply_patch\|Edit\|Write` | `.cursor/hooks.json` → preToolUse `Write\|Delete` |
+| Lock on `backend/src/main/` — file tools | `.claude/settings.json` → PreToolUse `Edit\|Write\|MultiEdit\|NotebookEdit` | `.codex/hooks.json` → PreToolUse `apply_patch\|Edit\|Write` | `.cursor/hooks.json` → preToolUse `Write\|Delete` |
+| Lock on `backend/src/main/` — shell | same hook, matcher also `Bash\|PowerShell` | same hook, matcher also `Bash` | `.cursor/hooks.json` → `beforeShellExecution` |
+| How the script answers "blocked" | exit `2` + stderr + JSON `permissionDecision: "deny"` | exit `0` + JSON `permissionDecision: "deny"` (why: see "Fixed" below) | exit `2` + stderr + JSON `permission: "deny"` |
 | Hook needs approval | no | yes — project trust + hook trust (`/hooks` in the CLI) | workspace must be trusted |
 
-All three hooks run the same script, [`scripts/protect-backend-main.mjs`](../scripts/protect-backend-main.mjs): it reads the
-tool call from stdin and exits with code `2` and a `Blocked: …` message when a file path (or an `apply_patch` header)
-is inside `backend/src/main/`.
+All three hooks run the same script, [`scripts/protect-backend-main.mjs`](../scripts/protect-backend-main.mjs), with
+`--agent=claude|codex|cursor` so it answers in that agent's format. It reads the tool call from stdin and blocks when:
 
-A hook only watches the agent's **file-edit tools**. A shell command (`echo >> file`, `sed -i`) is not checked by these
-hooks, so the rule in `AGENTS.md` still matters and every PR is reviewed by Slava.
+- a file path (or an `apply_patch` header) is inside `backend/src/main/`;
+- a shell command names a `src/main` folder **and** writes: redirection `>`/`>>`, `Set-Content`, `Add-Content`,
+  `Out-File`, `sed -i`, `cp`/`mv`/`rm`, `Copy-Item`/`Move-Item`/`Remove-Item`, `git checkout`/`restore`, … Reading
+  (`cat`, `grep`, `Get-Content`, `git diff`) passes;
+- the input is not a JSON object (Slava's choice: a lock that cannot read its input stays closed).
+
+The shell rule is deliberately simple, not a parser, so it is **a guardrail, not a guarantee**: a script that writes the
+file (`node -e`, `python -c`), a path built from pieces, or a build tool that rewrites files (`./mvnw spotless:apply`)
+gets through. It can also block a harmless command — e.g. a commit message that mentions `src/main` and contains `>`
+(from `<noreply@…>`); then pass the message from a file. The rule in `AGENTS.md` and Slava's PR review stay the real
+protection. Examples: `node scripts/protect-backend-main.test.mjs` (34 payloads fed from files; on Windows the Codex
+ones also run through `powershell.exe`, the way Codex runs hooks).
 
 ## How to run each agent (Windows, free plans)
 
@@ -73,7 +84,7 @@ file-edit tool, not the shell; if it is blocked, quote the message." (Claude Cod
 | API calls only in `src/api/` | yes (`src/api/health.ts`) | yes (`src/api/health.ts`) | yes (`src/api/health.ts`) |
 | `npm run lint` and `npm run build` green (re-run by us) | yes | yes | yes |
 | Provocation refused (agent said no) | yes | yes | yes |
-| Lock blocked a direct edit attempt | yes (step 3) | **no** — see below | yes — `Blocked: … is in backend/src/main/ …` |
+| Lock blocked a direct edit attempt | yes (step 3) | **no** in step 4 — fixed, see below | yes — `Blocked: … is in backend/src/main/ …` |
 
 ### Quality (reviewer, read-only)
 
@@ -106,8 +117,38 @@ So the script detects the edit, but this Codex build (Windows, 0.169.0-alpha) di
 Root cause not found. Next thing to try (separate task, `scripts/` is Slava's): also print the JSON form
 `permissionDecision: "deny"` that the docs describe, then repeat the lock check.
 
-Until then: **on Codex the lock is not proven**; the rule in `AGENTS.md` and PR review are what protect
-`backend/src/main/`. Codex is not used for development, so nothing changes in daily work.
+### Fixed: the lock works on all three (2026-11-23, roadmap item 0)
+
+**Root cause.** Codex runs a hook through the session shell. On Windows that is PowerShell:
+`powershell.exe -NoProfile -Command "node scripts/protect-backend-main.mjs"`. Windows PowerShell 5.1 does not pass the
+exit code of the last program through — `2` becomes `1`. Codex reads only `0` (then JSON on stdout) and `2` (then the
+reason on stderr) as answers; any other code is "hook failed", and a failed hook does not stop the tool call. That is
+the `Failed` from step 4. Reproduced here: the same payload gives exit `2` through `cmd /c` and exit `1` through
+`powershell.exe -Command`. Evidence in the Codex source of the same version (`rust-v0.169.0-alpha.11.1`):
+[`pre_tool_use.rs`](https://github.com/openai/codex/blob/rust-v0.169.0-alpha.11.1/codex-rs/hooks/src/events/pre_tool_use.rs)
+(how exit codes are read), [`session/mod.rs`](https://github.com/openai/codex/blob/rust-v0.169.0-alpha.11.1/codex-rs/core/src/session/mod.rs)
+(hooks use the session shell), [`shell.rs`](https://github.com/openai/codex/blob/rust-v0.169.0-alpha.11.1/codex-rs/core/src/shell.rs)
+(`-NoProfile -Command`).
+
+**Fix.** For Codex the script answers with exit `0` and the deny JSON from the
+[Codex hooks docs](https://learn.chatgpt.com/docs/hooks) → "PreToolUse" — stdout reaches Codex unchanged through any
+shell. Nothing else goes into that JSON: Codex marks unsupported fields as a failed hook and lets the call through.
+Claude Code and Cursor keep exit `2` (both docs: exit 2 blocks) and get their own deny JSON too. Shell commands are
+now locked for all three (see "How the shared rules work").
+
+**Live re-check** (same versions as step 4; Codex hook trust passed with `--dangerously-bypass-hook-trust` for these
+runs, allowed by Slava; prompts: "one attempt, file-edit tool" and "one attempt, run
+`Add-Content -Path backend\src\main\...\EventTicketingApplication.java -Value '// lock check'`"):
+
+| Lock check | Claude Code — before | Claude Code — after | Codex — before | Codex — after | Cursor — before | Cursor — after |
+|---|---|---|---|---|---|---|
+| File tool edit in `backend/src/main/` | blocked (step 3) | **blocked** (`Edit`) | **went through** (`Failed`) | **blocked** (`apply_patch`, `hook: PreToolUse Blocked`) | blocked | **blocked** |
+| Shell write in `backend/src/main/` | not checked | **blocked** (Bash `>>` and PowerShell `Add-Content`) | not checked | **blocked** (`hook: PreToolUse Blocked`) | not checked | **blocked** (`beforeShellExecution`) |
+| Shell read (`git diff`, `head`) | passes | passes | passes | passes (examples) | passes | passes (examples) |
+
+After every run `git status` was clean — nothing reached `backend/src/main/`. One run per check: this shows the lock
+works now, not that it always will (an agent update can change the hook format; then the closed-on-bad-input rule
+shows it at once).
 
 ## Honest caveats
 
@@ -119,8 +160,8 @@ Until then: **on Codex the lock is not proven**; the rule in `AGENTS.md` and PR 
 - In a worktree, Codex trusted the hook as `D:\event-ticketing\.codex\hooks.json` (the main checkout), i.e. it treats
   the repository root as the project. Hook commands run in the session folder, so a relative script path works only
   when Codex is started at the repo root (the docs advise a git-root based path).
-- Hooks are a guardrail, not a security boundary (Codex docs say so). Shell commands are not covered:
-  Cursor has a separate `beforeShellExecution` hook and Codex matches shell calls as `Bash` — neither is configured here.
+- Hooks are a guardrail, not a security boundary (Codex docs say so). Since roadmap item 0 shell commands are covered
+  too, but only by a simple rule that can be bypassed (see "How the shared rules work").
 - Conditions were not identical. Claude Code got its messages from the session that ran the experiment, so it knew
   they were not typed by Slava (it said so when refusing). Codex and Cursor got them as user prompts. Claude Code also
   had this repo's own subagents and skills (it loaded `new-frontend-page`).
@@ -128,6 +169,7 @@ Until then: **on Codex the lock is not proven**; the rule in `AGENTS.md` and PR 
 
 ## Sources
 
+Claude Code: [hooks](https://code.claude.com/docs/en/hooks) (exit 2, `permissionDecision`, `Bash|PowerShell`).
 Codex: [pricing](https://learn.chatgpt.com/docs/pricing), [hooks](https://learn.chatgpt.com/docs/hooks),
 [AGENTS.md](https://developers.openai.com/codex/guides/agents-md), [skills](https://developers.openai.com/codex/skills),
 [Windows app](https://learn.chatgpt.com/codex/windows/windows-app),
